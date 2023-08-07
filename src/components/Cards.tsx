@@ -66,7 +66,7 @@ function Cards({ className, name, onClickFavorite, listFavorite }: IProps) {
           className="right-0 z-10"
         >
           {listFavorite
-            .map((i: Pokemon) => i?.name)
+            ?.map((i: Pokemon) => i?.name)
             .includes(data?.name as string) ? (
             <HeartFilledPinkIcon />
           ) : (
