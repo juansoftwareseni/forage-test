@@ -9,18 +9,18 @@ import HeartFilledGreyIcon from "public/heart-filled-grey.svg";
 interface IProps {
   className?: string;
   name: string;
+  onClickFavorite: (v: Pokemon) => void;
+  listFavorite: any;
 }
 
-function Cards(props: IProps) {
+function Cards({ className, name, onClickFavorite, listFavorite }: IProps) {
   const [data, setData] = useState<Pokemon>();
   const [isLoading, setIsLoading] = useState(true);
-  const [isRefetch, setIsRefetch] = useState(true);
 
-  const [listFavorite, setListFavorite] = useState([]);
   const loadPokemon = async () => {
     const api = new PokemonClient();
     await api
-      .getPokemonByName(props.name)
+      .getPokemonByName(name)
       .then((res) => {
         setData(res);
       })
@@ -29,30 +29,10 @@ function Cards(props: IProps) {
         setIsLoading(false);
       });
   };
-  const handleAddToFav = () => {
-    if (
-      listFavorite &&
-      listFavorite.map((i: Pokemon) => i?.name).includes(data?.name as string)
-    ) {
-      const filteredData = listFavorite.filter(
-        (i: Pokemon) => i.name !== data?.name
-      );
-      localStorage.setItem("favorite", JSON.stringify(filteredData));
-    } else if (listFavorite === null) {
-      localStorage.setItem("favorite", JSON.stringify([data]));
-    } else if (listFavorite?.length) {
-      localStorage.setItem("favorite", JSON.stringify([...listFavorite, data]));
-    }
-    setIsRefetch((prev) => !prev);
-  };
-  useEffect(() => {
-    loadPokemon();
-  }, [props.name]);
 
   useEffect(() => {
-    const listFavo: [] = JSON.parse(localStorage.getItem("favorite") as string);
-    setListFavorite(listFavo);
-  }, [isRefetch]);
+    loadPokemon();
+  }, [name]);
 
   if (isLoading) return null;
 
@@ -60,7 +40,7 @@ function Cards(props: IProps) {
     <div
       className={joinClass(
         "relative rounded-[4px] shadow-sm shadow-gray-50 min-h-[60px] w-full flex flex-col gap-4 p-4",
-        props.className
+        className
       )}
     >
       <Link
@@ -81,7 +61,7 @@ function Cards(props: IProps) {
       <div className="absolute top-1 lg:top-3 right-3">
         <button
           onClick={() => {
-            handleAddToFav();
+            onClickFavorite(data as Pokemon);
           }}
           className="right-0 z-10"
         >
