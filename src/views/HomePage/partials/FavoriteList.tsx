@@ -27,10 +27,11 @@ function FavoriteList() {
     }
     setIsRefetch((prev) => !prev);
   };
+  if (!listFavorite?.length) return null;
 
   return (
     <div className="p-6">
-      <h2 className="mb-6 text-lg font-normal">Pokemon List</h2>
+      <h2 className="mb-6 text-lg font-normal">Favorite List</h2>
       <div className="grid grid-cols-5 gap-4">
         {listFavorite?.map((i: any) => (
           <Cards
